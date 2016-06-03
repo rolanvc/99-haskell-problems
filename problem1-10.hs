@@ -25,4 +25,28 @@ myLength (x:xs) = 1+ myLength xs
 --reverse a list
 --
 myReverse :: [a] -> [a]
+myReverse (a:[]) = [a]
+myReverse (x:xs) = myReverse xs ++ [x] 
 
+--check if palindrome
+isPalindrome ::(Eq a) => [a] -> Bool
+isPalindrome x = x == myReverse x
+
+--flatten a nested list structure
+data NestedList a= Elem a | List [NestedList a]
+myflatten:: NestedList a ->[a]
+myflatten (Elem x) = [x]
+myflatten( List []) = []
+myflatten (List (x:xs)) = myflatten x ++ myflatten (List xs)
+ 
+--compress consecutive repeating elements into one element
+lastelem :: [a] ->a
+lastelem (a:[]) = a
+lastelem (x:xs) = lastelem xs
+compresscore ::(Eq a) => [a] ->[a] -> [a]
+compresscore a [] = a
+compresscore a (x:xs) = if lastelem a == x then compresscore a xs else compresscore (a++[x]) xs
+
+compress ::(Eq a) => [a] -> [a]
+compress [] = []
+compress (x:xs) = compresscore [x] xs
