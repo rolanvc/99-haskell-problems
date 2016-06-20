@@ -1,3 +1,4 @@
+import Data.List
 --get last element
 myLast::[a]->a
 myLast []=error "Empty List!"
@@ -50,3 +51,22 @@ compresscore a (x:xs) = if lastelem a == x then compresscore a xs else compressc
 compress ::(Eq a) => [a] -> [a]
 compress [] = []
 compress (x:xs) = compresscore [x] xs
+
+packCore ::(Eq a)=>  [a] -> [a] -> [a]
+packCore l (h:t) = let lastelem = myLast l 
+		   in	if lastelem== h 
+			then l ++[h]
+			else l 
+
+--pack consecutive duplicates of list items into sublists.
+pack:: (Eq a) =>  [a] -> [[a]]
+pack xs = foldl (\acc x -> if not(null acc) && [x] `Data.List.isPrefixOf` (last acc)
+	then (init acc) ++ [(last acc) ++ [x]]
+	else acc ++ [[x]])
+	[] xs
+
+--run-length encode a list. consecutive duplicates of elements are encoded as (N E) where N is the number of duplicates of element E.
+encode:: (Eq a) => [a] -> [(Int, a)]
+encodeList:: [a] -> (Int,a)
+encodeList x=(myLength x, head x)
+encode x = map encodeList $ pack x
